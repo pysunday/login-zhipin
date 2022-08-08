@@ -1,0 +1,13 @@
+{
+  "name": "zhipin",
+  "type": "login",
+  "version": "1.0.0",
+  "description": "boss直聘登录模块",
+  "main": "main.py",
+  "keywords": [
+    "sunday",
+    "login"
+  ],
+  "author": "ct",
+  "license": "ISC"
+}
