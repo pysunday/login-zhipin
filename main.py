@@ -66,10 +66,24 @@ class Zhipin(LoginBase):
         self.logger.debug('uuid: %s, qrid: %s' % (uuid, qrid))
         return qrid
 
+    def setCookieA(self):
+        # cookie设置__a的值, 设置uniqid是会用到
+        import math, random, time
+        a = str(math.floor(9e7 * random.random() + 1e7))
+        b = str(round(time.time()))
+        times = str(random.randint(0, 9))
+        value = '.'.join([a, b, '', b, times, '1', times, times])
+        self.setCookie('__a', value, '.zhipin.com')
+
+    def initCookies(self):
+        # 初始化cookie
+        self.setCookieA()
+
     def login(self):
         if self.isLogin:
             self.logger.info('登录成功')
             return self
+        self.initCookies()
         res = self.rs.get(config.loginUrl)
         soup = BeautifulSoup(res.content, 'lxml')
         uuid = soup.select_one('input[class="uuid"]').attrs['value']
