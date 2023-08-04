@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+import json
 import inquirer
 from inquirer.themes import GreenPassion
 from sunday.login.zhipin import config
@@ -8,6 +9,7 @@ from sunday.core import paths, Logger, enver, exit, cache_name, Auth, getCurrent
 from bs4 import BeautifulSoup
 from pydash import get
 
+# 命令行执行登录操作
 @cache_name('zhipin')
 class Zhipin(LoginBase):
     def __init__(self):
@@ -98,7 +100,24 @@ class Zhipin(LoginBase):
         else:
             self.logger.warning('登录失败')
             exit('登录失败')
-        
+
+    def login2brower(self):
+        # 登录态同步到浏览器
+        cookies = json.dumps([f'{key}={val}' for key, val in self.rs.getCookiesDict().items()])
+        print('步骤1. 浏览器进入网站：https://www.zhipin.com/')
+        jsexec = f"javascript:{cookies}.map(t => document.cookie = t.trim() + ';' + 'path=/');history.pushState(undefined, undefined, '#cookie写入成功！')"
+        print(f'步骤2. 顶部网址输入框写入并回车：{jsexec}')
+
+    def setZpStoken(self):
+        # 登录态同步到浏览器并返回设置__zp_stoken__值
+        self.login2brower()
+        print('步骤3. 浏览器输入网址：https://www.zhipin.com/web/geek/job')
+        jsexec = f"javascript:history.pushState(undefined, undefined, '#' + /__zp_stoken__=(.*);?/.exec(document.cookie)[1])"
+        print(f'步骤4. 顶部网址输入框写入并回车：{jsexec}')
+        print(f'步骤5. 顶部网址输入框#后端的字符串复制到这里')
+        zpToken = input('将步骤5复制的文本黏贴到这里: ')
+        self.rs.setCookie('__zp_stoken__', zpToken, '*.zhipin.com')
+
 
 if __name__ == "__main__":
     login = Zhipin()

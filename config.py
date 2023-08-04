@@ -21,3 +21,5 @@ scanLoginUrl = 'https://login.zhipin.com/wapi/zppassport/qrcode/scanLogin?qrId=%
 scanSecondUrl = 'https://login.zhipin.com/wapi/zppassport/qrcode/scanSecond?uuid=%s'
 
 dispatcher = 'https://login.zhipin.com/wapi/zppassport/qrcode/dispatcher?qrId=%s'
+
+zpToken = 'https://www.zhipin.com/wapi/zppassport/get/zpToken'
